@@ -46,14 +46,14 @@ endif
 
 quality: $(VENV)/bin/activate-quality
 	$(MAKE) clean
-	$(PYTHON) -m black --check --line-length $(LINE_LEN) --target-version $(PY_VER_SHORT) $(QUALITY_DIRS)
-	$(PYTHON) -m flake8 --max-doc-length $(DOC_LEN) --max-line-length $(LINE_LEN) $(QUALITY_DIRS) 
+	$(PYTHON) -m black --check $(QUALITY_DIRS)
+	$(PYTHON) -m autopep8 -a $(QUALITY_DIRS)
 
 style: $(VENV)/bin/activate-quality
-	$(PYTHON) -m autoflake -r -i --remove-all-unused-imports --remove-unused-variables $(QUALITY_DIRS)
+	$(PYTHON) -m autoflake -r -i $(QUALITY_DIRS)
 	$(PYTHON) -m isort $(QUALITY_DIRS)
-	$(PYTHON) -m autopep8 -a -r -i --max-line-length=$(LINE_LEN) $(QUALITY_DIRS)
-	$(PYTHON) -m black --line-length $(LINE_LEN) --target-version $(PY_VER_SHORT) $(QUALITY_DIRS)
+	$(PYTHON) -m autopep8 -a $(QUALITY_DIRS)
+	$(PYTHON) -m black $(QUALITY_DIRS)
 
 test: $(VENV)/bin/activate-test ## run unit tests
 	$(PYTHON) -m pytest \
