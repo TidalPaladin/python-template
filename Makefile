@@ -2,14 +2,10 @@
 
 PROJECT=project
 PY_VER=python3.10
-PY_VER_SHORT=py$(shell echo $(PY_VER) | sed 's/[^0-9]*//g')
 QUALITY_DIRS=$(PROJECT) tests setup.py
 CLEAN_DIRS=$(PROJECT) tests
 VENV=$(shell pwd)/env
 PYTHON=$(VENV)/bin/python
-
-LINE_LEN=120
-DOC_LEN=120
 
 CONFIG_FILE := config.mk
 ifneq ($(wildcard $(CONFIG_FILE)),)
@@ -90,11 +86,10 @@ upload-test: package
 
 env: $(VENV)/bin/activate ## create a virtual environment for the project
 
-$(VENV)/bin/activate: setup.py setup.cfg requirements.txt
+$(VENV)/bin/activate: setup.py setup.cfg
 	test -d $(VENV) || $(PY_VER) -m venv $(VENV)
 	$(PYTHON) -m ensurepip
 	$(PYTHON) -m pip install -U pip 
-	$(PYTHON) -m pip install -r requirements.txt
 	$(PYTHON) -m pip install -e .
 	touch $(VENV)/bin/activate
 
