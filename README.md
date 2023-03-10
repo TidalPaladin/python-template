@@ -8,8 +8,8 @@ Template repository for Python projects.
 2. Update the `$PROJECT` variable in `Makefile` to match step 1
 3. Update `install_requires` in `setup.cfg` with project dependencies
 4. Add source code to the renamed `project` folder
-5. Run `make env` to install the project to a virtual environment
-6. Run the script using `env/bin/python`
+5. Run `make init` to install the project to a `pipenv` virtual environment
+6. You can execute commands from the `pipenv` environment with `pipenv run`
 
 ## Optional steps
 * Setup CI - a template CircleCI config is provided in `.circeci/config.yml`

@@ -4,8 +4,8 @@ PROJECT=project
 PY_VER=python3.10
 QUALITY_DIRS=$(PROJECT) tests setup.py
 CLEAN_DIRS=$(PROJECT) tests
-VENV=$(shell pwd)/env
-PYTHON=$(VENV)/bin/python
+VENV=$(shell pipenv --venv)
+PYTHON=pipenv run python
 
 CONFIG_FILE := config.mk
 ifneq ($(wildcard $(CONFIG_FILE)),)
@@ -27,11 +27,12 @@ clean: ## remove cache files
 	find $(CLEAN_DIRS) -name '*.orig' -type f -delete
 
 clean-env: ## remove the virtual environment directory
-	rm -rf $(VENV)
+	pipenv --rm
 
 init: ## pulls submodules and initializes virtual environment
 	git submodule update --init --recursive
-	$(MAKE) $(VENV)/bin/activate
+	which pipenv || pip install --user pipenv
+	pipenv install --dev
 
 node_modules: 
 ifeq (, $(shell which npm))
@@ -40,18 +41,18 @@ else
 	npm install
 endif
 
-quality: $(VENV)/bin/activate-quality
+quality:
 	$(MAKE) clean
 	$(PYTHON) -m black --check $(QUALITY_DIRS)
 	$(PYTHON) -m autopep8 -a $(QUALITY_DIRS)
 
-style: $(VENV)/bin/activate-quality
+style:
 	$(PYTHON) -m autoflake -r -i $(QUALITY_DIRS)
 	$(PYTHON) -m isort $(QUALITY_DIRS)
 	$(PYTHON) -m autopep8 -a $(QUALITY_DIRS)
 	$(PYTHON) -m black $(QUALITY_DIRS)
 
-test: $(VENV)/bin/activate-test ## run unit tests
+test: ## run unit tests
 	$(PYTHON) -m pytest \
 		-rs \
 		--cov=./$(PROJECT) \
@@ -59,13 +60,13 @@ test: $(VENV)/bin/activate-test ## run unit tests
 		--cov-report=term \
 		./tests/
 
-test-%: $(VENV)/bin/activate-test ## run unit tests matching a pattern
+test-%: ## run unit tests matching a pattern
 	$(PYTHON) -m pytest -rs -k $* -v ./tests/ 
 
-test-pdb-%: $(VENV)/bin/activate-test ## run unit tests matching a pattern with PDB fallback
+test-pdb-%: ## run unit tests matching a pattern with PDB fallback
 	$(PYTHON) -m pytest -rs --pdb -k $* -v ./tests/ 
 
-test-ci: $(VENV)/bin/activate $(VENV)/bin/activate-test ## runs CI-only tests
+test-ci: ## runs CI-only tests
 	$(PYTHON) -m pytest \
 		--cov=./$(PROJECT) \
 		--cov-report=xml \
@@ -73,29 +74,8 @@ test-ci: $(VENV)/bin/activate $(VENV)/bin/activate-test ## runs CI-only tests
 		-m "not ci_skip" \
 		./tests/
 
-types: $(VENV)/bin/activate node_modules
+types: node_modules
 	npx --no-install pyright tests $(PROJECT)
-
-upload: package
-	$(PYTHON) -m pip install --upgrade twine
-	$(PYTHON) -m twine upload --repository pypi dist/*
-
-upload-test: package
-	$(PYTHON) -m pip install --upgrade twine
-	$(PYTHON) -m twine upload --repository testpypi dist/*
-
-env: $(VENV)/bin/activate ## create a virtual environment for the project
-
-$(VENV)/bin/activate: setup.py setup.cfg
-	test -d $(VENV) || $(PY_VER) -m venv $(VENV)
-	$(PYTHON) -m ensurepip
-	$(PYTHON) -m pip install -U pip 
-	$(PYTHON) -m pip install -e .
-	touch $(VENV)/bin/activate
-
-$(VENV)/bin/activate-%: $(VENV)/bin/activate
-	$(PYTHON) -m pip install -e .[$*]
-	touch $(VENV)/bin/activate-$*
 
 help: ## display this help message
 	@echo "Please use \`make <target>' where <target> is one of"
