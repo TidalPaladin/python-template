@@ -26,11 +26,12 @@ clean: ## remove cache files
 	find $(CLEAN_DIRS) -name '*.orig' -type f -delete
 
 clean-env: ## remove the virtual environment directory
-	pipenv --rm
+	pdm venv remove $(PROJECT)
 
 init: ## pulls submodules and initializes virtual environment
 	git submodule update --init --recursive
 	which pdm || pip install --user pdm
+	pdm venv create -n $(PROJECT)
 	pdm install -d
 
 node_modules: 
