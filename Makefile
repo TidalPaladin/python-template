@@ -1,7 +1,6 @@
 .PHONY: clean clean-env check quality style tag-version test env upload upload-test
 
 PROJECT=project
-PY_VER=python3.10
 QUALITY_DIRS=$(PROJECT) tests
 CLEAN_DIRS=$(PROJECT) tests
 PYTHON=pdm run python
