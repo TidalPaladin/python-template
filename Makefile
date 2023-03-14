@@ -64,7 +64,6 @@ test: ## run unit tests
 	$(PYTHON) -m pytest \
 		-rs \
 		--cov=./$(PROJECT) \
-		--cov-report=xml \
 		--cov-report=term \
 		./tests/
 
