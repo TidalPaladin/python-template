@@ -5,19 +5,6 @@ orbs:
   codecov: codecov/codecov@3.2.4
 
 
-commands:
-    setup_node_modules:
-        steps:
-            - run: sudo apt update
-            - run: sudo apt install -y npm
-            - run: sudo npm cache clean -f
-            - run: sudo npm install -g n
-            - run: sudo n stable
-            - run:
-                name: Install static type checker
-                command: npm ci
-
-
 jobs:
     check_code_quality:
         docker:
@@ -61,7 +48,6 @@ jobs:
             - run:
                 name: Run tests
                 command: make test-ci
-                  #- setup_node_modules
             - run:
                 name: Install static type checker
                 command: npm ci
