@@ -4,7 +4,6 @@ build-backend = "pdm.pep517.api"
 
 [project]
 name = "python-template"
-version = "0.1.0"
 description = ""
 requires-python = ">=3.7"
 authors = [
@@ -13,6 +12,7 @@ authors = [
 dependencies = []
 readme = "README.md"
 license = {text = "Apache"}
+dynamic = ["version"]
 
 [project.optional-dependencies]
 
@@ -43,6 +43,7 @@ use_parentheses = false
 [tool.pyright]
 
 [tool.pdm]
+version = { source = "scm" }
 
 [tool.pdm.dev-dependencies]
 test = [
@@ -58,6 +59,9 @@ quality = [
   "flake8",
   "isort",
 ]
+
+[tool.pytest.ini_options.markers]
+ci_skip = "skip tests in CI environment"
 
 # Sample script config
 #[project.scripts]
