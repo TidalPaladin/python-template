@@ -51,6 +51,7 @@ test = [
   "pytest-mock",
   "pytest-cov",
   "coverage",
+  "pdbpp",
 ]
 quality = [
   "autoflake",
