@@ -75,8 +75,8 @@ test-ci: ## runs CI-only tests
 		--cov-report=term \
 		./tests/
 
-types: node_modules
-	uv run npx --no-install pyright tests $(PROJECT)
+types:
+	uv run pyright
 
 update:
 	uv sync --all-groups --all-extras
